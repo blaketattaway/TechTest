@@ -23,17 +23,6 @@ GRANT CREATE ANY DATABASE TO techtest_login WITH GRANT OPTION;
 
 GRANT CREATE LOGIN TO techtest_login;
 
-IF NOT EXISTS(
-	SELECT name
-	  FROM master.sys.asymmetric_keys
-	WHERE name = 'LoginPassKey')
- BEGIN
-	CREATE ASYMMETRIC KEY [LoginPassKey]
-		AUTHORIZATION [dbo]
-		WITH ALGORITHM = RSA_2048
-		ENCRYPTION BY PASSWORD = N'AlddagtaeYksvGnm0deaSmdemsFT7_&#$!~<kilzz@Bvrala';
- END
-
 IF DB_ID('tenants') IS NOT NULL
 	DROP DATABASE tenants
 
@@ -116,6 +105,11 @@ GO
 USE login
 GO
 
+CREATE ASYMMETRIC KEY [LoginPassKey]
+AUTHORIZATION [dbo]
+WITH ALGORITHM = RSA_2048
+ENCRYPTION BY PASSWORD = N'AlddagtaeYksvGnm0deaSmdemsFT7_&#$!~<kilzz@Bvrala';
+
 IF NOT EXISTS (
 	SELECT name  
       FROM master.sys.server_principals
@@ -152,6 +146,7 @@ GO
 CREATE PROCEDURE [dbo].[Usp_CheckPassword]
 	@pc_Email VARCHAR(100),
 	@pc_Password VARCHAR(MAX)
+WITH EXECUTE AS OWNER
 AS
 BEGIN
 	DECLARE 
@@ -165,7 +160,7 @@ BEGIN
 	 WHERE Email = @pc_Email
 
 	SELECT 
-		CASE WHEN @pc_Password = CONVERT(VARCHAR(MAX), DECRYPTBYASYMKEY(ASYMKEY_ID('FluxPassKey'), @vb_EncryptedPassword, N'lu&1OGEwtyL9NBWyTI#hW0XIIly4omcrxr3Fa4z1LnG$NZx#6S')) THEN 1
+		CASE WHEN @pc_Password = CONVERT(VARCHAR(MAX), DECRYPTBYASYMKEY(ASYMKEY_ID('LoginPassKey'), @vb_EncryptedPassword, N'AlddagtaeYksvGnm0deaSmdemsFT7_&#$!~<kilzz@Bvrala')) THEN 1
 		ELSE 0
 	END
 
@@ -173,19 +168,22 @@ END
 
 GO
 CREATE PROCEDURE [dbo].[Usp_Users_INS]
-	@pc_Email INT,
+	@pc_Email VARCHAR(100),
 	@pc_Password VARCHAR(MAX),
 	@pi_OrganizationId INT
+WITH EXECUTE AS OWNER
 AS
 BEGIN
 	DECLARE 
 		@vc_Salt VARCHAR(50) = 'F*Ws^2MJAySbz*e^RMbZ',
-		@vb_EncryptedPassword VARBINARY(256)
+		@vc_EncryptedPassword VARBINARY(256)
+
+	SET @vc_EncryptedPassword = ENCRYPTBYASYMKEY(ASYMKEY_ID('LoginPassKey'), CONCAT(@pc_Password, @vc_Salt))
 
 	INSERT 
 	  INTO [dbo].[Users]
 	VALUES (@pc_Email,
-	        ENCRYPTBYASYMKEY(ASYMKEY_ID('FluxPassKey'), CONCAT(@pc_Password, @vc_Salt)),
+	        @vc_EncryptedPassword,
 			@pi_OrganizationId)
 END
 
