@@ -193,7 +193,8 @@ CREATE PROCEDURE [dbo].[Usp_UserByEmail]
 AS
 BEGIN
 	SELECT UserId,
-		   Email
+		   Email,
+		   OrganizationId
 	  FROM users
 	 WHERE Email = @pc_Email
 END
