@@ -38,8 +38,10 @@ IF DB_ID('tenants') IS NOT NULL
 	DROP DATABASE tenants
 
 CREATE DATABASE tenants
+GO
 
 USE tenants
+GO
 
 IF NOT EXISTS (
 	SELECT name  
@@ -92,6 +94,9 @@ END
 
 GO
 
+USE tenants
+GO
+
 GRANT EXECUTE ON OBJECT::[dbo].[Usp_Tenants_SEL]
    TO tenants_user
 
@@ -106,8 +111,10 @@ IF DB_ID('login') IS NOT NULL
  END
 
 CREATE DATABASE login
+GO
 
 USE login
+GO
 
 IF NOT EXISTS (
 	SELECT name  
@@ -143,7 +150,7 @@ ON users (Email)
 
 GO
 CREATE PROCEDURE [dbo].[Usp_CheckPassword]
-	@pc_Email INT,
+	@pc_Email VARCHAR(100),
 	@pc_Password VARCHAR(MAX)
 AS
 BEGIN
@@ -216,6 +223,10 @@ BEGIN
 	VALUES (@pc_Name,
 			@pc_SlugTenant)
 END
+GO
+
+USE login
+GO
 
 GRANT EXECUTE ON OBJECT::[dbo].[Usp_CheckPassword]
    TO login_user
