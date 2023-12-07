@@ -22,9 +22,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TechTest.Domain", "src\TechTest.Domain\TechTest.Domain.csproj", "{C95E8054-E130-4A4E-95BD-A94EAFC07E1F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "script", "script", "{E2ED0020-A7D0-442C-B308-F2C6BC41B0B4}"
-	ProjectSection(SolutionItems) = preProject
-		SQLInitialScript.sql = SQLInitialScript.sql
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
