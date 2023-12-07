@@ -52,6 +52,8 @@ namespace TechTest.Application.Handlers
 
             var usersOrganization = await _unitOfWork.OrganizationsRepository.GetById(currentUser.OrganizationId);
 
+            user.OrganizationId = currentUser.OrganizationId;
+
             var loginResponse = _tokenHelper.Generate(user);
 
             loginResponse.Tenants = new List<Tenant> { new Tenant { SlugTenant = usersOrganization.SlugTenant }  };

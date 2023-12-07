@@ -3,6 +3,7 @@ using TechTest.API.Tenants;
 using TechTest.Application.Contracts.Handlers;
 using TechTest.Domain.Entities;
 using Newtonsoft.Json;
+using TechTest.Application.Contracts.Helpers;
 
 namespace TechTest.API.Middleware
 {
@@ -17,7 +18,7 @@ namespace TechTest.API.Middleware
             _tenantHandler = tenantHandler;
         }
 
-        public async Task Invoke(HttpContext context, ITenantSetter tenantSetter, IConfiguration configuration)
+        public async Task Invoke(HttpContext context, ITenantSetter tenantSetter)
         {
             try
             {

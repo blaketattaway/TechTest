@@ -64,5 +64,10 @@ namespace TechTest.Application.Handlers
 
             return new ResponseObject<bool>();
         }
+
+        public async Task<OrganizationDTO?> GetById(int organizationId)
+        {
+            return await _loginUnitOfWork.OrganizationsRepository.GetById(organizationId);
+        }
     }
 }

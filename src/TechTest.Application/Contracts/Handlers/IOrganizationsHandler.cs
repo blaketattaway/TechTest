@@ -6,5 +6,7 @@ namespace TechTest.Application.Contracts.Handlers
     public interface IOrganizationsHandler
     {
         Task<ResponseObject<bool>> Create(OrganizationDTO organization);
+
+        Task<OrganizationDTO?> GetById(int organizationId);
     }
 }
