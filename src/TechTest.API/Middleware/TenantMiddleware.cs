@@ -2,6 +2,7 @@
 using TechTest.API.Tenants;
 using TechTest.Application.Contracts.Handlers;
 using TechTest.Domain.Entities;
+using Newtonsoft.Json;
 
 namespace TechTest.API.Middleware
 {
@@ -20,8 +21,6 @@ namespace TechTest.API.Middleware
         {
             try
             {
-                context.Items["Tenant"] = null;
-
                 var path = context.Request.Path.ToString();
 
                 var splittedPath = path.Split('/');
@@ -46,7 +45,10 @@ namespace TechTest.API.Middleware
             }
             catch (Exception ex)
             {
-
+                var response = context.Response;
+                response.ContentType = "application/json";
+                response.StatusCode = 500;
+                await response.WriteAsync(JsonConvert.SerializeObject(new ResponseObject<bool> { Status = 500, StatusText = ex.Message }));
             }
         }
 

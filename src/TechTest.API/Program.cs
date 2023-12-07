@@ -21,32 +21,7 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(option =>
-{
-    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        In = ParameterLocation.Header,
-        Description = "Please enter a valid token",
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        BearerFormat = "JWT",
-        Scheme = "Bearer"
-    });
-    option.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type=ReferenceType.SecurityScheme,
-                    Id="Bearer"
-                }
-            },
-            new string[]{}
-        }
-    });
-});
+builder.Services.AddSwaggerGen();
 
 builder.Services.AddMultitenancy();
 
@@ -81,6 +56,7 @@ app.UseMiddleware<TenantMiddleware>();
 app.UseHttpsRedirection();
 app.MapControllers();
 app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
 app.UseEndpoints(endpoints =>
 {

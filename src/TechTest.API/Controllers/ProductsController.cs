@@ -7,10 +7,9 @@ using TechTest.Domain.DTOs.Products;
 
 namespace TechTest.API.Controllers
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize]
     [Route("[controller]")]
     [ApiController]
-    [AllowAnonymous]
     public class ProductsController : ControllerBase
     {
         private readonly IProductsHandler _productsHandler;
@@ -22,8 +21,8 @@ namespace TechTest.API.Controllers
             _tenantContext = tenantContext;
         }
 
-        [HttpGet("GetById/{productId}")]
-        public async Task<IActionResult> GetById(int productId)
+        [HttpGet("GetById")]
+        public async Task<IActionResult> GetById([FromQuery]int productId)
         {
             return Ok(await _productsHandler.GetById(_tenantContext.CurrentTenant, productId));
         }
@@ -47,7 +46,7 @@ namespace TechTest.API.Controllers
         }
 
         [HttpPost("Delete")]
-        public async Task<IActionResult> Delete(int productId)
+        public async Task<IActionResult> Delete([FromQuery]int productId)
         {
             return Ok(await _productsHandler.Delete(_tenantContext.CurrentTenant, productId));
         }

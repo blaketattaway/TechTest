@@ -39,7 +39,7 @@ namespace TechTest.Infrastructure.Repositories
             try
             {
                 sqlConnection.Open();
-                return (await sqlConnection.QueryAsync<ProductDTO>(spString, commandType: System.Data.CommandType.StoredProcedure)).ToList();
+                return (await sqlConnection.QueryAsync<ProductDTO>(spString)).ToList();
             }
             catch (Exception ex)
             {
@@ -58,12 +58,12 @@ namespace TechTest.Infrastructure.Repositories
 									   Description,
 									   Quantity
 								  FROM products
-							     WHERE ProductId = @ProductId";
+							     WHERE ProductId = @pi_ProductId";
             SqlConnection sqlConnection = new SqlConnection(tenant.ConnectionString);
             try
             {
                 sqlConnection.Open();
-                return (await sqlConnection.QueryAsync<ProductDTO>(spString, new { pi_ProductId = productId }, commandType: System.Data.CommandType.StoredProcedure)).FirstOrDefault();
+                return (await sqlConnection.QueryAsync<ProductDTO>(spString, new { pi_ProductId = productId })).FirstOrDefault();
             }
             catch (Exception ex)
             {
@@ -92,11 +92,11 @@ namespace TechTest.Infrastructure.Repositories
             try
             {
                 sqlConnection.Open();
-                await sqlConnection.ExecuteAsync(spString, obj, commandType: System.Data.CommandType.StoredProcedure);
+                await sqlConnection.ExecuteAsync(spString, obj);
             }
             catch (Exception ex)
             {
-
+                throw new Exception("There was an unexpected error");
             }
             finally
             {
