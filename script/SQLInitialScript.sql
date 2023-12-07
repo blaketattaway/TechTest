@@ -5,9 +5,17 @@ IF NOT EXISTS (
 	SELECT name  
       FROM master.sys.server_principals
      WHERE name = 'techtest_login')
+ BEGIN
 	 CREATE LOGIN techtest_login WITH PASSWORD = 'techtest_password', DEFAULT_DATABASE = master;
+ END
 
-CREATE USER techtest_user FOR LOGIN techtest_login
+IF NOT EXISTS (
+ SELECT [name]
+   FROM [sys].[database_principals]
+  WHERE [type] = N'S' AND [name] = N'techtest_user')
+ BEGIN
+	CREATE USER techtest_user FOR LOGIN techtest_login
+ END
 
 ALTER ROLE db_owner ADD MEMBER techtest_user;
 
@@ -15,16 +23,16 @@ GRANT CREATE ANY DATABASE TO techtest_login WITH GRANT OPTION;
 
 GRANT CREATE LOGIN TO techtest_login;
 
-GRANT
-
 IF NOT EXISTS(
-	SELECT *
+	SELECT name
 	  FROM master.sys.asymmetric_keys
 	WHERE name = 'LoginPassKey')
+ BEGIN
 	CREATE ASYMMETRIC KEY [LoginPassKey]
 		AUTHORIZATION [dbo]
 		WITH ALGORITHM = RSA_2048
 		ENCRYPTION BY PASSWORD = N'AlddagtaeYksvGnm0deaSmdemsFT7_&#$!~<kilzz@Bvrala';
+ END
 
 IF DB_ID('tenants') IS NOT NULL
 	DROP DATABASE tenants
@@ -37,9 +45,17 @@ IF NOT EXISTS (
 	SELECT name  
       FROM master.sys.server_principals
      WHERE name = 'tenants_login')
+BEGIN
 	 CREATE LOGIN tenants_login WITH PASSWORD = 'tenants_password', DEFAULT_DATABASE = tenants;
+END
 
-CREATE USER tenants_user FOR LOGIN tenants_login
+IF NOT EXISTS (
+ SELECT [name]
+   FROM [sys].[database_principals]
+  WHERE [type] = N'S' AND [name] = N'tenants_user')
+ BEGIN
+	CREATE USER tenants_user FOR LOGIN tenants_login
+ END
 
 CREATE TABLE tenants(
 	TenantId INT IDENTITY PRIMARY KEY,
@@ -85,7 +101,9 @@ GRANT EXECUTE ON OBJECT::[dbo].[Usp_Tenants_INS]
 USE master
 
 IF DB_ID('login') IS NOT NULL
+ BEGIN
 	DROP DATABASE login
+ END
 
 CREATE DATABASE login
 
@@ -95,9 +113,17 @@ IF NOT EXISTS (
 	SELECT name  
       FROM master.sys.server_principals
      WHERE name = 'login_login')
+ BEGIN
 	 CREATE LOGIN login_login WITH PASSWORD = 'login_password', DEFAULT_DATABASE = login;
+ END
 
-CREATE USER login_user FOR LOGIN login_login
+IF NOT EXISTS (
+ SELECT [name]
+   FROM [sys].[database_principals]
+  WHERE [type] = N'S' AND [name] = N'login_user')
+ BEGIN
+	CREATE USER login_user FOR LOGIN login_login
+ END
 
 CREATE TABLE users(
 	UserId INT IDENTITY PRIMARY KEY,
